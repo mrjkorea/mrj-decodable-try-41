@@ -54,25 +54,25 @@
     },
     {
       "page_id": "p05",
-      "text": "Zeno's tin chest is open. Rani puts a music chip in him. \"Go, Zeno, go!\"",
+      "text": "Zeno's tin chest is open. A music chip is in his chest. \"Go, Zeno, go!\"",
       "image": "books/mlr_dec_056/pages/p05.webp",
       "audio": "books/mlr_dec_056/audio/pages/p05.mp3",
-      "duration_ms": 7209,
+      "duration_ms": 7602,
       "voice": "57785406027844b29b63a772a8477bc2",
       "has_video": false,
       "song_audio": "books/mlr_dec_056/audio/song/p05.mp3",
-      "song_duration_ms": 10422
+      "song_duration_ms": 8464
     },
     {
       "page_id": "p06",
-      "text": "Om is little, and he likes tigers. He opens the chest, grabs the music chip, and puts his tiger chip in.",
+      "text": "Om is little, and he likes tigers. He opens the chest, grabs the music chip, and in goes his tiger chip.",
       "image": "books/mlr_dec_056/pages/p06.webp",
       "audio": "books/mlr_dec_056/audio/pages/p06.mp3",
-      "duration_ms": 8568,
+      "duration_ms": 10214,
       "voice": "57785406027844b29b63a772a8477bc2",
       "has_video": false,
       "song_audio": "books/mlr_dec_056/audio/song/p06.mp3",
-      "song_duration_ms": 10475
+      "song_duration_ms": 10370
     },
     {
       "page_id": "p07",
@@ -160,12 +160,12 @@
       },
       {
         "page_id": "p05",
-        "text": "Zeno's tin chest is open. Rani puts a music chip in him. \"Go, Zeno, go!\"",
+        "text": "Zeno's tin chest is open. A music chip is in his chest. \"Go, Zeno, go!\"",
         "audio": "books/mlr_dec_056/audio/dictation/p05.mp3"
       },
       {
         "page_id": "p06",
-        "text": "Om is little, and he likes tigers. He opens the chest, grabs the music chip, and puts his tiger chip in.",
+        "text": "Om is little, and he likes tigers. He opens the chest, grabs the music chip, and in goes his tiger chip.",
         "audio": "books/mlr_dec_056/audio/dictation/p06.mp3"
       },
       {
