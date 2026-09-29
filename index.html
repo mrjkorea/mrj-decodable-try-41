@@ -557,6 +557,14 @@ function showLib(){
     a.textContent='Books 1–40';
     a.style.cssText='display:block;text-align:center;font-weight:900;margin:0 0 8px;color:#ffd84a';
     $('libList').before(a);
+    const nxt=document.createElement('a');
+    nxt.id='nextBand';
+    nxt.href='https://mrjkorea.github.io/mrj-decodable-try-71/';
+    nxt.target='_blank';
+    nxt.rel='noopener';
+    nxt.textContent='Books 71–100';
+    nxt.style.cssText='display:block;text-align:center;font-weight:900;margin:0 0 8px;color:#ffd84a';
+    $('libList').before(nxt);
   }
   $('modeBadge').textContent='Books 41–70';
   const nextId=bookOrder().find(id=>unlocked(id) && !bookProg(id).passed)||'';
