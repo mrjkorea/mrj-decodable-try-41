@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "The Owl Comes Down Without a Sound",
   "level": "DEC 068",
-  "sound": "ou / ow = /a\u028a/ (cow, house, cloud, down, now \u2014 the mouth-open sound in `owl`, `round`, `sound`, `ground`, `out`)",
+  "sound": "ou / ow = /aʊ/ (cow, house, cloud, down, now — the mouth-open sound in `owl`, `round`, `sound`, `ground`, `out`)",
   "famous": [
     "they"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_068/audio/pages/p10.mp3",
       "duration_ms": 7888,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_068/audio/song/p10.mp3",
-      "song_duration_ms": 9247
+      "song_duration_ms": 9247,
+      "video": "books/mlr_dec_068/video/p10.mp4"
     }
   ],
   "voices": {

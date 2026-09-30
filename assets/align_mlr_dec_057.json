@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Why Things Fly",
   "level": "DEC 057",
-  "sound": "y = /\u012b/ at the end of a one-syllable word (my, by, why, fly, try, cry, dry, sky, shy, sly). Two-syllable y = /\u0113/ (happy, funny) is **banned here** \u2014 that is Book 58.",
+  "sound": "y = /ī/ at the end of a one-syllable word (my, by, why, fly, try, cry, dry, sky, shy, sly). Two-syllable y = /ē/ (happy, funny) is **banned here** — that is Book 58.",
   "famous": [
     "found"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_057/audio/pages/p10.mp3",
       "duration_ms": 10475,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_057/audio/song/p10.mp3",
-      "song_duration_ms": 11624
+      "song_duration_ms": 11624,
+      "video": "books/mlr_dec_057/video/p10.mp4"
     }
   ],
   "voices": {

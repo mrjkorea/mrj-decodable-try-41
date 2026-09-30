@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Lan Floats the Tin Boat",
   "level": "DEC 065",
-  "sound": "oa = /\u014d/ (boat, coat, road, toad \u2014 two letters, one long O, and the `a` says nothing at all)",
+  "sound": "oa = /ō/ (boat, coat, road, toad — two letters, one long O, and the `a` says nothing at all)",
   "famous": [
     "moon"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_065/audio/pages/p10.mp3",
       "duration_ms": 8150,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_065/audio/song/p10.mp3",
-      "song_duration_ms": 8750
+      "song_duration_ms": 8750,
+      "video": "books/mlr_dec_065/video/p10.mp4"
     }
   ],
   "voices": {

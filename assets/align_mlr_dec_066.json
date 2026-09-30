@@ -3,14 +3,14 @@
   "product": "decodable",
   "title": "Every Zoo Animal Gets a Toy",
   "level": "DEC 066",
-  "sound": "oo = /u\u02d0/ (moon, zoo, food, pool \u2014 the long \"ooo\" you make with your lips in a little ring)",
+  "sound": "oo = /uː/ (moon, zoo, food, pool — the long \"ooo\" you make with your lips in a little ring)",
   "famous": [
     "toy"
   ],
   "pages": [
     {
       "page_id": "p01",
-      "text": "A zoo animal gets food, a cool room, a pool \u2014 and a toy, too.",
+      "text": "A zoo animal gets food, a cool room, a pool — and a toy, too.",
       "image": "books/mlr_dec_066/pages/p01.webp",
       "audio": "books/mlr_dec_066/audio/pages/p01.mp3",
       "duration_ms": 6765,
@@ -43,7 +43,7 @@
     },
     {
       "page_id": "p04",
-      "text": "Big cats get a boomer ball \u2014 too big for a tooth. It zooms in the pool.",
+      "text": "Big cats get a boomer ball — too big for a tooth. It zooms in the pool.",
       "image": "books/mlr_dec_066/pages/p04.webp",
       "audio": "books/mlr_dec_066/audio/pages/p04.mp3",
       "duration_ms": 6347,
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_066/audio/pages/p10.mp3",
       "duration_ms": 10422,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_066/audio/song/p10.mp3",
-      "song_duration_ms": 12146
+      "song_duration_ms": 12146,
+      "video": "books/mlr_dec_066/video/p10.mp4"
     }
   ],
   "voices": {
@@ -140,7 +141,7 @@
     "items": [
       {
         "page_id": "p01",
-        "text": "A zoo animal gets food, a cool room, a pool \u2014 and a toy, too.",
+        "text": "A zoo animal gets food, a cool room, a pool — and a toy, too.",
         "audio": "books/mlr_dec_066/audio/dictation/p01.mp3"
       },
       {
@@ -155,7 +156,7 @@
       },
       {
         "page_id": "p04",
-        "text": "Big cats get a boomer ball \u2014 too big for a tooth. It zooms in the pool.",
+        "text": "Big cats get a boomer ball — too big for a tooth. It zooms in the pool.",
         "audio": "books/mlr_dec_066/audio/dictation/p04.mp3"
       },
       {

@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Sunny's Muddy Puppy",
   "level": "DEC 058",
-  "sound": "y /\u0113/ (happy, funny, puppy \u2014 end of a 2-syllable word)",
+  "sound": "y /ē/ (happy, funny, puppy — end of a 2-syllable word)",
   "famous": [
     "away"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_058/audio/pages/p10.mp3",
       "duration_ms": 8306,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_058/audio/song/p10.mp3",
-      "song_duration_ms": 9247
+      "song_duration_ms": 9247,
+      "video": "books/mlr_dec_058/video/p10.mp4"
     }
   ],
   "voices": {

@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_051/audio/pages/p10.mp3",
       "duration_ms": 6974,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_051/audio/song/p10.mp3",
-      "song_duration_ms": 9299
+      "song_duration_ms": 9299,
+      "video": "books/mlr_dec_051/video/p10.mp4"
     }
   ],
   "voices": {

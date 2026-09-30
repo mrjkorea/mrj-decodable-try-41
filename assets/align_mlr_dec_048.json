@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Ming Is the King",
   "level": "DEC 048",
-  "sound": "-ing (the sound chunk /ing/ \u2014 not a lesson about gerund meaning)",
+  "sound": "-ing (the sound chunk /ing/ — not a lesson about gerund meaning)",
   "famous": [
     "little"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_048/audio/pages/p10.mp3",
       "duration_ms": 5825,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_048/audio/song/p10.mp3",
-      "song_duration_ms": 6504
+      "song_duration_ms": 6504,
+      "video": "books/mlr_dec_048/video/p10.mp4"
     }
   ],
   "voices": {

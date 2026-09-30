@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Omar Draws a Hawk on the Lawn",
   "level": "DEC 070",
-  "sound": "au / aw = /\u0254\u02d0/ (saw, paw, lawn, draw, hauls, straw)",
+  "sound": "au / aw = /ɔː/ (saw, paw, lawn, draw, hauls, straw)",
   "famous": [
     "bread"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_070/audio/pages/p10.mp3",
       "duration_ms": 9456,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_070/audio/song/p10.mp3",
-      "song_duration_ms": 9247
+      "song_duration_ms": 9247,
+      "video": "books/mlr_dec_070/video/p10.mp4"
     }
   ],
   "voices": {

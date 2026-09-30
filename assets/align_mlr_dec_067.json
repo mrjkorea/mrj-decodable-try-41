@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "A Cook Book Is a Book You Must Do",
   "level": "DEC 067",
-  "sound": "oo = /\u028a/ (book, look, cook, wood, good, took, hook, stood, foot \u2014 the short, quick `oo`, lips barely moving. NOT the long /u\u02d0/ of Book 66.)",
+  "sound": "oo = /ʊ/ (book, look, cook, wood, good, took, hook, stood, foot — the short, quick `oo`, lips barely moving. NOT the long /uː/ of Book 66.)",
   "famous": [
     "cow"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_067/audio/pages/p10.mp3",
       "duration_ms": 6086,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_067/audio/song/p10.mp3",
-      "song_duration_ms": 7209
+      "song_duration_ms": 7209,
+      "video": "books/mlr_dec_067/video/p10.mp4"
     }
   ],
   "voices": {

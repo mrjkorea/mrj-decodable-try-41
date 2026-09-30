@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "A Sheep Keeps the Hill Green",
   "level": "DEC 062",
-  "sound": "ee = /\u0113/ (sheep, feet, green, week \u2014 two e's doing one long sound)",
+  "sound": "ee = /ē/ (sheep, feet, green, week — two e's doing one long sound)",
   "famous": [
     "eat"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_062/audio/pages/p10.mp3",
       "duration_ms": 9952,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_062/audio/song/p10.mp3",
-      "song_duration_ms": 10187
+      "song_duration_ms": 10187,
+      "video": "books/mlr_dec_062/video/p10.mp4"
     }
   ],
   "voices": {

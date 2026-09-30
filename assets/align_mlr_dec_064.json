@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Light Is the Thing You Can Not See",
   "level": "DEC 064",
-  "sound": "igh = /\u012b/ (light, bright, night, high \u2014 three letters, one long-I sound, no vowel job for the `gh`)",
+  "sound": "igh = /ī/ (light, bright, night, high — three letters, one long-I sound, no vowel job for the `gh`)",
   "famous": [
     "food"
   ],
@@ -109,14 +109,15 @@
     },
     {
       "page_id": "p10",
-      "text": "Hunt for lights tonight: a night light, a star up high. You can not see light in flight \u2014 you see what it hits!",
+      "text": "Hunt for lights tonight: a night light, a star up high. You can not see light in flight — you see what it hits!",
       "image": "books/mlr_dec_064/pages/p10.webp",
       "audio": "books/mlr_dec_064/audio/pages/p10.mp3",
       "duration_ms": 9142,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_064/audio/song/p10.mp3",
-      "song_duration_ms": 9639
+      "song_duration_ms": 9639,
+      "video": "books/mlr_dec_064/video/p10.mp4"
     }
   ],
   "voices": {
@@ -185,7 +186,7 @@
       },
       {
         "page_id": "p10",
-        "text": "Hunt for lights tonight: a night light, a star up high. You can not see light in flight \u2014 you see what it hits!",
+        "text": "Hunt for lights tonight: a night light, a star up high. You can not see light in flight — you see what it hits!",
         "audio": "books/mlr_dec_064/audio/dictation/p10.mp3"
       }
     ],

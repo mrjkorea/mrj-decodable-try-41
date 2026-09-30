@@ -3,14 +3,14 @@
   "product": "decodable",
   "title": "Every Handle Is a Spot for a Hand",
   "level": "DEC 059",
-  "sound": "-le = /\u0259l/ (apple, table, candle, puzzle \u2014 the syllable at the end of a word)",
+  "sound": "-le = /əl/ (apple, table, candle, puzzle — the syllable at the end of a word)",
   "famous": [
     "today"
   ],
   "pages": [
     {
       "page_id": "p01",
-      "text": "A kettle, a bottle, a little pan \u2014 every one has a handle: a spot for a hand.",
+      "text": "A kettle, a bottle, a little pan — every one has a handle: a spot for a hand.",
       "image": "books/mlr_dec_059/pages/p01.webp",
       "audio": "books/mlr_dec_059/audio/pages/p01.mp3",
       "duration_ms": 7523,
@@ -43,7 +43,7 @@
     },
     {
       "page_id": "p04",
-      "text": "A long handle lets a little arm push hard \u2014 a shovel, a paddle, a rake!",
+      "text": "A long handle lets a little arm push hard — a shovel, a paddle, a rake!",
       "image": "books/mlr_dec_059/pages/p04.webp",
       "audio": "books/mlr_dec_059/audio/pages/p04.mp3",
       "duration_ms": 7026,
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_059/audio/pages/p10.mp3",
       "duration_ms": 10475,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_059/audio/song/p10.mp3",
-      "song_duration_ms": 11546
+      "song_duration_ms": 11546,
+      "video": "books/mlr_dec_059/video/p10.mp4"
     }
   ],
   "voices": {
@@ -140,7 +141,7 @@
     "items": [
       {
         "page_id": "p01",
-        "text": "A kettle, a bottle, a little pan \u2014 every one has a handle: a spot for a hand.",
+        "text": "A kettle, a bottle, a little pan — every one has a handle: a spot for a hand.",
         "audio": "books/mlr_dec_059/audio/dictation/p01.mp3"
       },
       {
@@ -155,7 +156,7 @@
       },
       {
         "page_id": "p04",
-        "text": "A long handle lets a little arm push hard \u2014 a shovel, a paddle, a rake!",
+        "text": "A long handle lets a little arm push hard — a shovel, a paddle, a rake!",
         "audio": "books/mlr_dec_059/audio/dictation/p04.mp3"
       },
       {

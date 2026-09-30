@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "The Paint That Tells You Where to Walk",
   "level": "DEC 061",
-  "sound": "ai / ay = /\u0101/ (rain, trail, train, wait, paint \u00b7 day, way, stay, gray)",
+  "sound": "ai / ay = /ā/ (rain, trail, train, wait, paint · day, way, stay, gray)",
   "famous": [
     "sleep"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_061/audio/pages/p10.mp3",
       "duration_ms": 8045,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_061/audio/song/p10.mp3",
-      "song_duration_ms": 10057
+      "song_duration_ms": 10057,
+      "video": "books/mlr_dec_061/video/p10.mp4"
     }
   ],
   "voices": {

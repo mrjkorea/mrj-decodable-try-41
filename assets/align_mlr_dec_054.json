@@ -3,7 +3,7 @@
   "product": "decodable",
   "title": "Kim's First White Shirt",
   "level": "DEC 054",
-  "sound": "ir (`ir` = /\u0259r/ \u2014 bird, girl, shirt, dirt, first, third, stir, firm, chirp, twirl, squirm)",
+  "sound": "ir (`ir` = /ər/ — bird, girl, shirt, dirt, first, third, stir, firm, chirp, twirl, squirm)",
   "famous": [
     "our"
   ],
@@ -114,9 +114,10 @@
       "audio": "books/mlr_dec_054/audio/pages/p10.mp3",
       "duration_ms": 7993,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_054/audio/song/p10.mp3",
-      "song_duration_ms": 8646
+      "song_duration_ms": 8646,
+      "video": "books/mlr_dec_054/video/p10.mp4"
     }
   ],
   "voices": {

@@ -54,7 +54,7 @@
     },
     {
       "page_id": "p05",
-      "text": "Oil hides in soy beans, corn and nuts. Crush them and oil drips out \u2014 soy oil, nut oil!",
+      "text": "Oil hides in soy beans, corn and nuts. Crush them and oil drips out — soy oil, nut oil!",
       "image": "books/mlr_dec_069/pages/p05.webp",
       "audio": "books/mlr_dec_069/audio/pages/p05.mp3",
       "duration_ms": 8724,
@@ -109,14 +109,15 @@
     },
     {
       "page_id": "p10",
-      "text": "Point at the oil in your house: the pan, the chain, the hinge. Oil kills noise \u2014 a joy!",
+      "text": "Point at the oil in your house: the pan, the chain, the hinge. Oil kills noise — a joy!",
       "image": "books/mlr_dec_069/pages/p10.webp",
       "audio": "books/mlr_dec_069/audio/pages/p10.mp3",
       "duration_ms": 8986,
       "voice": "57785406027844b29b63a772a8477bc2",
-      "has_video": false,
+      "has_video": true,
       "song_audio": "books/mlr_dec_069/audio/song/p10.mp3",
-      "song_duration_ms": 9247
+      "song_duration_ms": 9247,
+      "video": "books/mlr_dec_069/video/p10.mp4"
     }
   ],
   "voices": {
@@ -160,7 +161,7 @@
       },
       {
         "page_id": "p05",
-        "text": "Oil hides in soy beans, corn and nuts. Crush them and oil drips out \u2014 soy oil, nut oil!",
+        "text": "Oil hides in soy beans, corn and nuts. Crush them and oil drips out — soy oil, nut oil!",
         "audio": "books/mlr_dec_069/audio/dictation/p05.mp3"
       },
       {
@@ -185,7 +186,7 @@
       },
       {
         "page_id": "p10",
-        "text": "Point at the oil in your house: the pan, the chain, the hinge. Oil kills noise \u2014 a joy!",
+        "text": "Point at the oil in your house: the pan, the chain, the hinge. Oil kills noise — a joy!",
         "audio": "books/mlr_dec_069/audio/dictation/p10.mp3"
       }
     ],
