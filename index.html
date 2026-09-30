@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-marker="dec20260930b4170">
+<html lang="en" data-marker="dec20260930order1">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -175,6 +175,7 @@ body.student-desk #bookStage #play{
 </head>
 <body class="student-desk">
 <!-- STUDENT-DESK-ARROWS-20260929 -->
+<!-- ORDER-LISTEN-READ-SONG-20260930 -->
 <div class="app">
   <header>
     <div>
@@ -211,8 +212,8 @@ body.student-desk #bookStage #play{
 <div class="bar">
   <div class="bar-row">
     <button id="mListen">Listen</button>
-    <button id="mSong">Song</button>
     <button id="mRead">Read</button>
+    <button id="mSong">Song</button>
     <button id="mDict">Dictation</button>
     <button id="mSay">Say</button>
   </div>
@@ -226,7 +227,7 @@ body.student-desk #bookStage #play{
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
 <script>
 const TEST=false;
-const ASSET_V='dec20260930b4170';
+const ASSET_V='dec20260930order1';
 const STUDENT_KEY='mrj-dec-student';
 const PIN_KEY='mrj-dec-pin';
 const AUTH_URL='https://script.google.com/macros/s/AKfycbwtJTUO3gbcMrlAwsn1feWxyp7Rw2cxpfe1bOT9v2rxmQHa2Tlc6pFNWAjU6ZAdlD6kFQ/exec';
@@ -427,10 +428,10 @@ function speakScorePct(){
 function syncModeLocks(){
   const bp=pack?bookProg(pack.book_id):null;
   $('mListen').disabled=!bp;
-  $('mSong').disabled=!(bp && bp.listen);
-  $('mRead').disabled=!(bp && bp.song);
-  $('mDict').disabled=!(bp && bp.read);
-  $('mSay').disabled=!(bp && bp.dictation);
+  $('mRead').disabled=!(bp && bp.listen);
+  $('mSong').disabled=!(bp && bp.listen && bp.read);
+  $('mDict').disabled=!(bp && bp.listen && bp.read && bp.song);
+  $('mSay').disabled=!(bp && bp.listen && bp.read && bp.song && bp.dictation);
 }
 function showSign(){ return; }
 function gloss(lem){ return ((pack&&pack.glossary&&pack.glossary.entries)||[]).find(x=>x.lemma===lem); }
@@ -477,7 +478,12 @@ function stopA(){
   if(audio){ try{audio.pause();}catch(e){} audio.onended=null; audio.ontimeupdate=null; audio.onloadedmetadata=null; audio=null; }
 }
 function playPath(path, onend, rate){
-  stopA(); if(!path){ if(onend) onend(); return; }
+  stopA();
+  if(!path){
+    const st=$('status');
+    if(st) st.textContent='This page has no sound yet.';
+    return;
+  }
   const a=new Audio(asset(path)); audio=a;
   a.playbackRate = (rate==null?1:rate);
   a.onended=()=>{ if(audio===a && onend) onend(); };
@@ -736,24 +742,20 @@ function canEnter(m){
   if(!pack) return false;
   const bp=bookProg(pack.book_id);
   if(m==='listen') return true;
-  if(m==='song') return !!bp.listen;
-  if(m==='read') return !!bp.song;
-  if(m==='dictation') return !!bp.read;
-  if(m==='speak') return !!bp.dictation;
-  if(m==='pass') return !!bp.speak;
+  if(m==='read') return !!bp.listen;
+  if(m==='song') return !!(bp.listen && bp.read);
+  if(m==='dictation') return !!(bp.listen && bp.read && bp.song);
+  if(m==='speak') return !!(bp.listen && bp.read && bp.song && bp.dictation);
+  if(m==='pass') return !!(bp.listen && bp.read && bp.song && bp.dictation && bp.speak);
   return false;
 }
 function setMode(m){
   if(!pack) return;
-  const want=m;
   if(!canEnter(m)){
     const bp=bookProg(pack.book_id);
-    if(want==='speak'){
-      m = bp.dictation ? 'speak' : (bp.read ? 'dictation' : (bp.song ? 'read' : (bp.listen ? 'song' : 'listen')));
-    } else if(m==='read' && bp.listen && !bp.song) m='song';
-    else if(!bp.listen) m='listen';
-    else if(!bp.song) m='song';
+    if(!bp.listen) m='listen';
     else if(!bp.read) m='read';
+    else if(!bp.song) m='song';
     else if(!bp.dictation) m='dictation';
     else if(!bp.speak) m='speak';
     else m='pass';
@@ -814,9 +816,9 @@ function go(d){
   listenGen++;
   stopA();
   if(nxt>=pack.pages.length){
-    if(mode==='listen'){ setBookProg(pack.book_id,{listen:true}); reportProgress(pack.book_id,'listen',true); setMode('listen-end'); return; }
-    if(mode==='song'){ setBookProg(pack.book_id,{song:true}); reportProgress(pack.book_id,'song',true); pageIndex=0; setMode('read'); return; }
-    if(mode==='read'){ setBookProg(pack.book_id,{read:true}); reportProgress(pack.book_id,'read',true); setMode('dictation'); return; }
+    if(mode==='listen'){ setBookProg(pack.book_id,{listen:true}); reportProgress(pack.book_id,'listen',true); pageIndex=0; setMode('read'); return; }
+    if(mode==='read'){ setBookProg(pack.book_id,{read:true}); reportProgress(pack.book_id,'read',true); pageIndex=0; setMode('song'); return; }
+    if(mode==='song'){ setBookProg(pack.book_id,{song:true}); reportProgress(pack.book_id,'song',true); setMode('dictation'); return; }
     return;
   }
   pageIndex=nxt; clipDone=false; renderPage();
