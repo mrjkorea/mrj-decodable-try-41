@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-marker="dec20260930order1">
+<html lang="en" data-marker="dec20260930intro1">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -227,7 +227,7 @@ body.student-desk #bookStage #play{
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
 <script>
 const TEST=false;
-const ASSET_V='dec20260930order1';
+const ASSET_V='dec20260930intro1';
 const STUDENT_KEY='mrj-dec-student';
 const PIN_KEY='mrj-dec-pin';
 const AUTH_URL='https://script.google.com/macros/s/AKfycbwtJTUO3gbcMrlAwsn1feWxyp7Rw2cxpfe1bOT9v2rxmQHa2Tlc6pFNWAjU6ZAdlD6kFQ/exec';
@@ -330,6 +330,8 @@ const SOUND_CARD={
 const TAUGHT={mlr_dec_001:['a','m','s','t'],mlr_dec_002:['a','m','s','t','p'],mlr_dec_003:['a','m','s','t','p','i'],mlr_dec_004:['a','m','s','t','p','i','n'],mlr_dec_005:['a','m','s','t','p','i','n','f'],mlr_dec_006:['a','m','s','t','p','i','n','f','o'],mlr_dec_007:['a','m','s','t','p','i','n','f','o','d'],mlr_dec_008:['a','m','s','t','p','i','n','f','o','d','c'],mlr_dec_009:['a','m','s','t','p','i','n','f','o','d','c','u'],mlr_dec_010:['a','m','s','t','p','i','n','f','o','d','c','u','g']};
 let lib=null, i18n=null, pack=null, pageIndex=0, mode='library', audio=null, listenGen=0, hlRaf=0;
 let introStep='mode', cousinIdx=0;
+let introDone=false;      // sound + famous + any pre-video finished -> Listen opens
+let preVideoDone=false;   // this book's start video (lawbreaker chase) played through
 let tapped=new Set(), heardListen=new Set(), heardSong=new Set();
 let sheriffOk=false;
 let clipDone=false, showLang=true, lang='ko';
@@ -427,7 +429,7 @@ function speakScorePct(){
 }
 function syncModeLocks(){
   const bp=pack?bookProg(pack.book_id):null;
-  $('mListen').disabled=!bp;
+  $('mListen').disabled=!(bp && introDone);   // Listen stays dead until the start is done
   $('mRead').disabled=!(bp && bp.listen);
   $('mSong').disabled=!(bp && bp.listen && bp.read);
   $('mDict').disabled=!(bp && bp.listen && bp.read && bp.song);
@@ -597,6 +599,8 @@ async function openBook(id){
   $('bookTitle').textContent=pack.title;
   introStep = 'cousin';
   cousinIdx=0;
+  introDone=false;
+  preVideoDone=false;
   showIntro();
 }
 
@@ -708,7 +712,7 @@ function showIntro(){
       const kick=()=>v.play().catch(()=>{});
       v.onloadedmetadata=kick;
       kick();
-      v.onended=()=>{ if(introStep==='chase') setMode('listen'); };
+      v.onended=()=>{ if(v.currentTime>0.5) preVideoDone=true; if(introStep==='chase'){ introDone=true; setMode('listen'); } };
     }
     return;
   }
@@ -720,19 +724,27 @@ function introAdvance(){
     if(cousinIdx<cousinLetters().length-1){ cousinIdx++; showIntro(); return; }
     introStep='famous-card'; showIntro(); return;
   }
-  if(introStep==='famous-card'){ introStep='famous'; showIntro(); return; }
+  if(introStep==='famous-card'){
+    const fw=String((pack.famous||[])[0]||'').toLowerCase();
+    if(fw){ introStep='famous'; showIntro(); return; }
+    introStep='chase'; showIntro(); return;   // no famous word in this book -> go on, never skip to Listen
+  }
   if(introStep==='famous'){
-    const n=(pack.law_breaker||[]).length;
-    if(!n){ setMode('listen'); return; }
-    introStep='chase'; showIntro(); return;
+    if((pack.law_breaker||[]).length){ introStep='chase'; showIntro(); return; }
+    introDone=true;   // no start video in this book -> the start is finished
+    setMode('listen'); return;
   }
   if(introStep==='chase'){
     const v=$('chaseVid');
-    if(v && v.paused && v.currentTime<0.4){
-      v.muted=false; v.volume=1; v.play().catch(()=>{ setMode('listen'); });
-      $('introGo').textContent='Start Listen';
-      return;
+    if(v){
+      const law=(pack.law_breaker||[]).length>0;
+      if(law && !preVideoDone) return;   // the start video must play through first
+      if(v.paused && !v.ended && !preVideoDone && v.currentTime<0.4){
+        v.muted=false; v.volume=1; v.play().catch(()=>{});
+        return;
+      }
     }
+    introDone=true;
     setMode('listen'); return;
   }
   setMode('listen');
@@ -741,7 +753,7 @@ function introAdvance(){
 function canEnter(m){
   if(!pack) return false;
   const bp=bookProg(pack.book_id);
-  if(m==='listen') return true;
+  if(m==='listen') return introDone;
   if(m==='read') return !!bp.listen;
   if(m==='song') return !!(bp.listen && bp.read);
   if(m==='dictation') return !!(bp.listen && bp.read && bp.song);
@@ -751,14 +763,25 @@ function canEnter(m){
 }
 function setMode(m){
   if(!pack) return;
-  if(!canEnter(m)){
-    const bp=bookProg(pack.book_id);
-    if(!bp.listen) m='listen';
-    else if(!bp.read) m='read';
-    else if(!bp.song) m='song';
-    else if(!bp.dictation) m='dictation';
-    else if(!bp.speak) m='speak';
-    else m='pass';
+  if(m!=='intro' && m!=='mode'){
+    // Listen (and everything after it) stays shut until the start is finished.
+    if(!introDone){
+      $('status').textContent='Finish the sound and the famous word first.';
+      showIntro();
+      return;
+    }
+    // The start is finished: never bounce back into the intro (that would relock Listen).
+    if(!canEnter(m)){
+      const bp=bookProg(pack.book_id);
+      if(!bp.listen) m='listen';
+      else if(!bp.read) m='read';
+      else if(!bp.song) m='song';
+      else if(!bp.dictation) m='dictation';
+      else if(!bp.speak) m='speak';
+      else m='pass';
+    }
+  } else if(!canEnter(m)){
+    m = introDone ? 'listen' : 'intro';
   }
   mode=m; stopA(); listenGen++; hideAll(); clipDone=false;
   $('workStage').classList.remove('dict-fit');
