@@ -143,6 +143,34 @@
     return JSON.stringify({ v: 1, books: merged }) !== JSON.stringify({ v: 1, books: serverBooks || {} });
   }
 
+  var SHARED_DEVICE_KEY = 'mrj_dec_progress_v4';
+
+  function studentProgressKey(idKey) {
+    idKey = String(idKey == null ? '' : idKey).trim();
+    if (!idKey) return '';
+    return SHARED_DEVICE_KEY + ':' + idKey;
+  }
+
+  /** Load only the per-student key; never read the shared legacy device key. */
+  function loadStudentProgressStore(getItem, idKey) {
+    var key = studentProgressKey(idKey);
+    if (!key) return {};
+    var raw = getItem(key);
+    if (raw == null || raw === '') return {};
+    try {
+      var data = JSON.parse(String(raw));
+      return data && typeof data === 'object' ? data : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function progressUploadJson(store, studentDisplayName) {
+    store = store && typeof store === 'object' ? store : {};
+    var books = (store.byStudent && studentDisplayName && store.byStudent[studentDisplayName]) || {};
+    return JSON.stringify({ v: 1, books: books });
+  }
+
   /** Save gating helper for tests */
   function createPackSaveGate() {
     var state = 'idle';
@@ -171,11 +199,15 @@
   }
 
   return {
+    SHARED_DEVICE_KEY: SHARED_DEVICE_KEY,
     blankProg: blankProg,
     mergeBookProgress: mergeBookProgress,
     mergeBooksMap: mergeBooksMap,
     parsePackBooks: parsePackBooks,
     progressJsonRicherThan: progressJsonRicherThan,
+    studentProgressKey: studentProgressKey,
+    loadStudentProgressStore: loadStudentProgressStore,
+    progressUploadJson: progressUploadJson,
     createPackSaveGate: createPackSaveGate
   };
 });

@@ -39,4 +39,44 @@ const M = require('../dec41-progress-merge.js');
   assert.strictEqual(gate.maySave(), false);
 })();
 
+(function testNeverReadsSharedLegacyKey() {
+  const legacyPayload = JSON.stringify({
+    byStudent: {
+      alice: { mlr_dec_041: { passed: true, listen: true } },
+      bob: { mlr_dec_042: { passed: true, listen: true } }
+    }
+  });
+  const aliceOnly = JSON.stringify({
+    byStudent: { alice: { mlr_dec_043: { listen: true } } }
+  });
+  const store = { [M.SHARED_DEVICE_KEY]: legacyPayload, [M.studentProgressKey('alice')]: aliceOnly };
+  const keysRead = [];
+  const data = M.loadStudentProgressStore(function (key) {
+    keysRead.push(key);
+    return store[key];
+  }, 'alice');
+  assert.strictEqual(keysRead.length, 1);
+  assert.strictEqual(keysRead[0], M.studentProgressKey('alice'));
+  assert.ok(!keysRead.includes(M.SHARED_DEVICE_KEY));
+  assert.deepStrictEqual(data.byStudent.alice.mlr_dec_043, { listen: true });
+  assert.strictEqual(data.byStudent.alice.mlr_dec_041, undefined);
+})();
+
+(function testUploadNeverIncludesLegacyMix() {
+  const studentStore = {
+    byStudent: { alice: { mlr_dec_043: { listen: true } } }
+  };
+  const legacyOnly = {
+    byStudent: {
+      alice: { mlr_dec_041: { passed: true } },
+      bob: { mlr_dec_042: { passed: true } }
+    }
+  };
+  const upload = JSON.parse(M.progressUploadJson(studentStore, 'alice'));
+  assert.deepStrictEqual(upload.books, { mlr_dec_043: { listen: true } });
+  const poisoned = JSON.parse(M.progressUploadJson(legacyOnly, 'alice'));
+  assert.ok(!poisoned.books.mlr_dec_042);
+  assert.deepStrictEqual(poisoned.books, { mlr_dec_041: { passed: true } });
+})();
+
 console.log('dec41-progress-merge: ok');

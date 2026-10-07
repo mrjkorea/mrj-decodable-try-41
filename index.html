@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="mrj-build" content="dec41-20261007-merge" />
+<meta name="mrj-build" content="dec41-20261007-merge2" />
 <title>MRJ Decodables — Books 41–70</title>
 <style>
 :root{--bg:#070d18;--card:#101a2e;--text:#f4f7ff;--muted:#a9b7d6;--hl:#ffd84a;--ok:#3ecf8e}
@@ -226,11 +226,11 @@ body.student-desk #bookStage #play{
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
-<script src="dec41-progress-merge.js?v=dec41-20261007-merge"></script>
+<script src="dec41-progress-merge.js?v=dec41-20261007-merge2"></script>
 <script>
-const MRJ_BUILD='dec41-20261007-merge';
+const MRJ_BUILD='dec41-20261007-merge2';
 const TEST=false;
-const ASSET_V='dec20261007merge1';
+const ASSET_V='dec20261007merge2';
 const STUDENT_KEY='mrj-dec-student';
 const PIN_KEY='mrj-dec-pin';
 const AUTH_URL='https://script.google.com/macros/s/AKfycbwtJTUO3gbcMrlAwsn1feWxyp7Rw2cxpfe1bOT9v2rxmQHa2Tlc6pFNWAjU6ZAdlD6kFQ/exec';
@@ -253,7 +253,6 @@ const GRADE_PATH='/api/grade';
 const $=id=>document.getElementById(id);
 const asset=p=>BASE+'assets/'+String(p||'').replace(/^assets\//,'')+'?v='+ASSET_V;
 const SAVE='mrj_dec_progress_v4';
-const SAVE_LEGACY=SAVE;
 const PACK_PROGRAM='decodable';
 const PACK_SAVE_THROTTLE_MS=17000;
 const MERGE=window.DEC41_PROGRESS_MERGE;
@@ -362,41 +361,22 @@ function studentIdKey(){
 }
 function progressStorageKey(){
   const k=studentIdKey();
-  return k ? (SAVE+':'+k) : SAVE_LEGACY;
-}
-function migrateLegacyProgressReadOnly(idKey){
-  if(!idKey) return null;
-  try{
-    const raw=localStorage.getItem(SAVE_LEGACY);
-    if(!raw) return null;
-    const legacy=JSON.parse(raw);
-    if(!legacy || typeof legacy!=='object') return null;
-    return legacy;
-  }catch(e){ return null; }
+  if(MERGE && MERGE.studentProgressKey) return MERGE.studentProgressKey(k);
+  return k ? (SAVE+':'+k) : '';
 }
 function loadAll(){
-  const key=progressStorageKey();
-  let data={};
-  try{ data=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ data={}; }
-  if(!data || typeof data!=='object') data={};
   const idKey=studentIdKey();
-  const name=studentName();
-  if(idKey && name){
-    const legacy=migrateLegacyProgressReadOnly(idKey);
-    if(legacy){
-      data.byStudent=data.byStudent||{};
-      const legBag=(legacy.byStudent&&legacy.byStudent[name])||(legacy.byStudent&&legacy.byStudent[idKey]);
-      if(legBag && typeof legBag==='object'){
-        const cur=data.byStudent[name]||{};
-        data.byStudent[name]=MERGE ? MERGE.mergeBooksMap(cur, legBag) : Object.assign({}, cur, legBag);
-      }
-      if(legacy._settings && !data._settings) data._settings=legacy._settings;
-    }
+  if(!idKey) return {};
+  if(MERGE && MERGE.loadStudentProgressStore){
+    return MERGE.loadStudentProgressStore(function(key){ return localStorage.getItem(key); }, idKey);
   }
-  return data;
+  const key=progressStorageKey();
+  if(!key) return {};
+  try{ const data=JSON.parse(localStorage.getItem(key)||'{}'); return data&&typeof data==='object'?data:{}; }catch(e){ return {}; }
 }
 function saveAll(p){
   const key=progressStorageKey();
+  if(!key) return;
   try{ localStorage.setItem(key, JSON.stringify(p)); }catch(e){}
 }
 function bookProg(id){
@@ -428,6 +408,7 @@ function studentPin(){ try{ return String(localStorage.getItem(PIN_KEY)||'').rep
 function progressBlob(){
   const name=studentName();
   const all=loadAll();
+  if(MERGE && MERGE.progressUploadJson) return MERGE.progressUploadJson(all, name);
   const books=(all.byStudent&&all.byStudent[name])||{};
   return JSON.stringify({v:1, books:books});
 }
