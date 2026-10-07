@@ -1,0 +1,7 @@
+{
+  "name": "mrj-decodable-try-41",
+  "private": true,
+  "scripts": {
+    "test": "node test/dec41-progress-merge.test.js"
+  }
+}

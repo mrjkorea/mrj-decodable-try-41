@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="mrj-build" content="dec41-20261007-merge2" />
 <title>MRJ Decodables — Books 41–70</title>
 <style>
 :root{--bg:#070d18;--card:#101a2e;--text:#f4f7ff;--muted:#a9b7d6;--hl:#ffd84a;--ok:#3ecf8e}
@@ -225,9 +226,11 @@ body.student-desk #bookStage #play{
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
+<script src="dec41-progress-merge.js?v=dec41-20261007-merge2"></script>
 <script>
+const MRJ_BUILD='dec41-20261007-merge2';
 const TEST=false;
-const ASSET_V='dec20261006say5';
+const ASSET_V='dec20261007merge2';
 const STUDENT_KEY='mrj-dec-student';
 const PIN_KEY='mrj-dec-pin';
 const AUTH_URL='https://script.google.com/macros/s/AKfycbwtJTUO3gbcMrlAwsn1feWxyp7Rw2cxpfe1bOT9v2rxmQHa2Tlc6pFNWAjU6ZAdlD6kFQ/exec';
@@ -250,6 +253,9 @@ const GRADE_PATH='/api/grade';
 const $=id=>document.getElementById(id);
 const asset=p=>BASE+'assets/'+String(p||'').replace(/^assets\//,'')+'?v='+ASSET_V;
 const SAVE='mrj_dec_progress_v4';
+const PACK_PROGRAM='decodable';
+const PACK_SAVE_THROTTLE_MS=17000;
+const MERGE=window.DEC41_PROGRESS_MERGE;
 const MAX_BOOKS=30;
 const SPEAK_DEFAULT=50;
 const SAY_MAX_TRIES=5;
@@ -339,10 +345,40 @@ let clipDone=false, showLang=true, lang='ko';
 let dictBuilt=[], dictQueue=[], dictIdx=0, dictRight=0, dictRate=0.8;
 let speakRec=null, sayPage=0, micCtx=null, lastYouBlob=null, lastTestBook=null;
 let sayTries=0, sayBest=0, sayAdvanceTimer=0;
+let packLoadState='idle';
+let packLoadRetryTimer=0;
+let packLoadBackoffMs=0;
+let saveQueued=false;
+let lastPackSaveAt=0;
+let packSaveTimer=0;
+let packSaveImmediate=false;
 
-function blankProg(){ return {passed:false,listen:false,song:false,read:false,dictation:false,speak:false,readPages:{},difficulty:null,dictScore:null,speakPages:{}}; }
-function loadAll(){ try{return JSON.parse(localStorage.getItem(SAVE)||'{}');}catch(e){return{};} }
-function saveAll(p){ localStorage.setItem(SAVE, JSON.stringify(p)); }
+function blankProg(){ return MERGE ? MERGE.blankProg() : {passed:false,listen:false,song:false,read:false,dictation:false,speak:false,readPages:{},difficulty:null,dictScore:null,speakPages:{}}; }
+function studentIdKey(){
+  const name=studentName();
+  if(!name) return '';
+  return String(name).trim().toLowerCase().replace(/\s+/g,' ');
+}
+function progressStorageKey(){
+  const k=studentIdKey();
+  if(MERGE && MERGE.studentProgressKey) return MERGE.studentProgressKey(k);
+  return k ? (SAVE+':'+k) : '';
+}
+function loadAll(){
+  const idKey=studentIdKey();
+  if(!idKey) return {};
+  if(MERGE && MERGE.loadStudentProgressStore){
+    return MERGE.loadStudentProgressStore(function(key){ return localStorage.getItem(key); }, idKey);
+  }
+  const key=progressStorageKey();
+  if(!key) return {};
+  try{ const data=JSON.parse(localStorage.getItem(key)||'{}'); return data&&typeof data==='object'?data:{}; }catch(e){ return {}; }
+}
+function saveAll(p){
+  const key=progressStorageKey();
+  if(!key) return;
+  try{ localStorage.setItem(key, JSON.stringify(p)); }catch(e){}
+}
 function bookProg(id){
   const all=loadAll();
   const name=studentName();
@@ -372,19 +408,115 @@ function studentPin(){ try{ return String(localStorage.getItem(PIN_KEY)||'').rep
 function progressBlob(){
   const name=studentName();
   const all=loadAll();
+  if(MERGE && MERGE.progressUploadJson) return MERGE.progressUploadJson(all, name);
   const books=(all.byStudent&&all.byStudent[name])||{};
   return JSON.stringify({v:1, books:books});
 }
 function applySheetProgress(raw){
   const name=studentName();
-  if(!name) return;
-  let data={};
-  try{ data=JSON.parse(raw||'{}'); }catch(e){ return; }
-  if(!data.books || typeof data.books!=='object') return;
+  if(!name) return {};
+  const parsed=MERGE ? MERGE.parsePackBooks(raw) : {books:{}};
+  const serverBooks=parsed.books||{};
   const all=loadAll();
   all.byStudent=all.byStudent||{};
-  all.byStudent[name]=data.books;
+  const localBooks=(all.byStudent[name])||{};
+  all.byStudent[name]=MERGE ? MERGE.mergeBooksMap(localBooks, serverBooks) : Object.assign({}, localBooks, serverBooks);
   saveAll(all);
+  return serverBooks;
+}
+function packLoadResponseOk(res){
+  if(!res) return false;
+  if(res.error) return false;
+  if(res.ok===false) return false;
+  return true;
+}
+function clearPackLoadRetry(){
+  if(packLoadRetryTimer){ clearTimeout(packLoadRetryTimer); packLoadRetryTimer=0; }
+}
+function schedulePackLoadRetry(){
+  clearPackLoadRetry();
+  packLoadBackoffMs=packLoadBackoffMs?Math.min(packLoadBackoffMs*2, 120000):3000;
+  packLoadRetryTimer=setTimeout(function(){ packLoadRetryTimer=0; loadDecodablePack(); }, packLoadBackoffMs);
+}
+function requestDecodablePackLoad(){
+  const id=studentName();
+  const token=window.MRJ_AUTH && MRJ_AUTH.token();
+  if(!id || !token) return Promise.resolve(null);
+  packLoadState='loading';
+  if(window.MRJ_AUTH && typeof MRJ_AUTH.loadPack==='function'){
+    return MRJ_AUTH.loadPack(PACK_PROGRAM);
+  }
+  return sheetPost(AUTH_URL, {action:'load_pack', id:id, token:token, program:PACK_PROGRAM});
+}
+function loadDecodablePack(){
+  const id=studentName();
+  if(!id) return;
+  return requestDecodablePackLoad().then(function(res){
+    if(packLoadResponseOk(res)){
+      packLoadState='loaded';
+      packLoadBackoffMs=0;
+      clearPackLoadRetry();
+      const raw=res && res.progress_json!=null ? res.progress_json : '';
+      const serverBooks=applySheetProgress(raw);
+      const nm=studentName();
+      if(MERGE && nm && MERGE.progressJsonRicherThan((loadAll().byStudent&&loadAll().byStudent[nm])||{}, serverBooks)){
+        queuePackSave(true);
+      }
+      flushQueuedPackSave();
+      return res;
+    }
+    packLoadState='failed';
+    schedulePackLoadRetry();
+    return res;
+  }).catch(function(){
+    packLoadState='failed';
+    schedulePackLoadRetry();
+    return null;
+  });
+}
+function flushQueuedPackSave(){
+  if(packLoadState!=='loaded' || !saveQueued) return;
+  saveQueued=false;
+  queuePackSave(false);
+}
+function queuePackSave(immediate){
+  const name=studentName();
+  const token=window.MRJ_AUTH && MRJ_AUTH.token();
+  if(!name || !token) return;
+  if(packLoadState!=='loaded'){
+    saveQueued=true;
+    return;
+  }
+  if(immediate) packSaveImmediate=true;
+  if(packSaveTimer) return;
+  const now=Date.now();
+  const wait=packSaveImmediate?0:Math.max(0, PACK_SAVE_THROTTLE_MS-(now-lastPackSaveAt));
+  packSaveTimer=setTimeout(function(){
+    packSaveTimer=0;
+    packSaveImmediate=false;
+    if(packLoadState!=='loaded'){ saveQueued=true; return; }
+    lastPackSaveAt=Date.now();
+    sendPackSave(progressBlob());
+  }, wait);
+}
+function sendPackSave(json){
+  const name=studentName();
+  const token=window.MRJ_AUTH && MRJ_AUTH.token();
+  if(!name || !token || packLoadState!=='loaded') return;
+  if(window.MRJ_AUTH && typeof MRJ_AUTH.savePack==='function'){
+    MRJ_AUTH.savePack(PACK_PROGRAM, json);
+    return;
+  }
+  sheetPost(AUTH_URL, {action:'save_pack', id:name, token:token, program:PACK_PROGRAM, progress_json:json});
+}
+function flushPackSaveOnPageHide(){
+  if(packLoadState!=='loaded') return;
+  if(packSaveTimer){ clearTimeout(packSaveTimer); packSaveTimer=0; }
+  const name=studentName();
+  const token=window.MRJ_AUTH && MRJ_AUTH.token();
+  if(!name || !token) return;
+  lastPackSaveAt=Date.now();
+  sendPackSave(progressBlob());
 }
 function sheetPost(url, body){
   return fetch(url,{
@@ -394,10 +526,7 @@ function sheetPost(url, body){
   }).then(function(r){ return r.json(); }).catch(function(){ return null; });
 }
 function saveSheetProgress(){
-  const name=studentName();
-  const token=window.MRJ_AUTH && MRJ_AUTH.token();
-  if(!name || !token) return;
-  sheetPost(AUTH_URL, {action:'save_pack', id:name, token:token, program:'decodable', progress_json:progressBlob()});
+  queuePackSave(false);
 }
 function reportProgress(bookId, itemId, completed, scorePct){
   const name=studentName();
@@ -539,15 +668,12 @@ async function boot(){
   $('next').onclick=()=>go(1);
   $('play').onclick=()=>playPage(true);
   $('introGo').onclick=()=>introAdvance();
+  window.addEventListener('pagehide', function(){ flushPackSaveOnPageHide(); });
   window.addEventListener('mrj-auth-ready', function(ev){
     const id=(ev.detail && ev.detail.id) || studentName();
     if(!id) return;
     localStorage.setItem(STUDENT_KEY, id);
-    const token=window.MRJ_AUTH && MRJ_AUTH.token();
-    sheetPost(AUTH_URL, {action:'load_pack', id:id, token:token, program:'decodable'}).then(function(res){
-      if(res && res.found && res.progress_json) applySheetProgress(res.progress_json);
-      showLib();
-    });
+    loadDecodablePack().finally(function(){ showLib(); });
   });
 }
 function hideAll(){ ['signStage','libStage','introStage','bookStage','workStage'].forEach(id=>$(id).classList.add('hidden')); }
