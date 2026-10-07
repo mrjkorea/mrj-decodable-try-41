@@ -134,7 +134,7 @@
       "id": "mlr_dec_057",
       "title": "Why Things Fly",
       "level": "DEC 057",
-      "sound": "y /\u012b/",
+      "sound": "y /ī/",
       "align": "align_mlr_dec_057.json",
       "cover": "books/mlr_dec_057/pages/p01.webp"
     },
@@ -142,7 +142,7 @@
       "id": "mlr_dec_058",
       "title": "Sunny's Muddy Puppy",
       "level": "DEC 058",
-      "sound": "y /\u0113/",
+      "sound": "y /ē/",
       "align": "align_mlr_dec_058.json",
       "cover": "books/mlr_dec_058/pages/p01.webp"
     },
@@ -161,86 +161,6 @@
       "sound": "old / ild / ind / ost",
       "align": "align_mlr_dec_060.json",
       "cover": "books/mlr_dec_060/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_061",
-      "title": "The Paint That Tells You Where to Walk",
-      "level": "DEC 061",
-      "sound": "ai / ay",
-      "align": "align_mlr_dec_061.json",
-      "cover": "books/mlr_dec_061/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_062",
-      "title": "A Sheep Keeps the Hill Green",
-      "level": "DEC 062",
-      "sound": "ee",
-      "align": "align_mlr_dec_062.json",
-      "cover": "books/mlr_dec_062/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_063",
-      "title": "The Sea Has a Beat",
-      "level": "DEC 063",
-      "sound": "ea",
-      "align": "align_mlr_dec_063.json",
-      "cover": "books/mlr_dec_063/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_064",
-      "title": "Light Is the Thing You Can Not See",
-      "level": "DEC 064",
-      "sound": "igh",
-      "align": "align_mlr_dec_064.json",
-      "cover": "books/mlr_dec_064/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_065",
-      "title": "Lan Floats the Tin Boat",
-      "level": "DEC 065",
-      "sound": "oa",
-      "align": "align_mlr_dec_065.json",
-      "cover": "books/mlr_dec_065/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_066",
-      "title": "Every Zoo Animal Gets a Toy",
-      "level": "DEC 066",
-      "sound": "oo moon",
-      "align": "align_mlr_dec_066.json",
-      "cover": "books/mlr_dec_066/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_067",
-      "title": "A Cook Book Is a Book You Must Do",
-      "level": "DEC 067",
-      "sound": "oo book",
-      "align": "align_mlr_dec_067.json",
-      "cover": "books/mlr_dec_067/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_068",
-      "title": "The Owl Comes Down Without a Sound",
-      "level": "DEC 068",
-      "sound": "ou / ow",
-      "align": "align_mlr_dec_068.json",
-      "cover": "books/mlr_dec_068/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_069",
-      "title": "Oil Is Not Water",
-      "level": "DEC 069",
-      "sound": "oi / oy",
-      "align": "align_mlr_dec_069.json",
-      "cover": "books/mlr_dec_069/pages/p01.webp"
-    },
-    {
-      "id": "mlr_dec_070",
-      "title": "Omar Draws a Hawk on the Lawn",
-      "level": "DEC 070",
-      "sound": "au / aw",
-      "align": "align_mlr_dec_070.json",
-      "cover": "books/mlr_dec_070/pages/p01.webp"
     }
   ]
 }

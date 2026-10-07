@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="mrj-build" content="dec41-20261007-merge2" />
-<title>MRJ Decodables — Books 41–70</title>
+<title>MRJ Decodables — Books 41-60</title>
 <style>
 :root{--bg:#070d18;--card:#101a2e;--text:#f4f7ff;--muted:#a9b7d6;--hl:#ffd84a;--ok:#3ecf8e}
 *{box-sizing:border-box}
@@ -219,10 +219,10 @@ body.student-desk #bookStage #play{
     <button id="mSay">Say</button>
   </div>
 </div>
-<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/ort/ort.all.min.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/engine.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/audio.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/grade-browser.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/ort/ort.all.min.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/engine.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/audio.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/grade-browser.js"></script>
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
@@ -230,7 +230,7 @@ body.student-desk #bookStage #play{
 <script>
 const MRJ_BUILD='dec41-20261007-merge2';
 const TEST=false;
-const ASSET_V='dec20261007merge2';
+const ASSET_V='dec20261008band20'';
 const STUDENT_KEY='mrj-dec-student';
 const PIN_KEY='mrj-dec-pin';
 const AUTH_URL='https://script.google.com/macros/s/AKfycbwtJTUO3gbcMrlAwsn1feWxyp7Rw2cxpfe1bOT9v2rxmQHa2Tlc6pFNWAjU6ZAdlD6kFQ/exec';
@@ -256,7 +256,7 @@ const SAVE='mrj_dec_progress_v4';
 const PACK_PROGRAM='decodable';
 const PACK_SAVE_THROTTLE_MS=17000;
 const MERGE=window.DEC41_PROGRESS_MERGE;
-const MAX_BOOKS=30;
+const MAX_BOOKS=20;
 const SPEAK_DEFAULT=50;
 const SAY_MAX_TRIES=5;
 const DICT_N=5;
@@ -660,7 +660,7 @@ async function boot(){
   $('mSay').onclick=()=>setMode('speak');
   try{
     if(window.MRJPronounce){
-      MRJPronounce.setBase('https://mrjkorea.github.io/mrj-decodable-try/pronounce/');
+      MRJPronounce.setBase('https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/');
       MRJPronounce.load().then(()=>{pronounceLoaded=true;}).catch(()=>{});
     }
   }catch(e){}
@@ -687,22 +687,22 @@ function showLib(){
   if(!band){
     const a=document.createElement('a');
     a.id='bandLink';
-    a.href='https://mrjkorea.github.io/mrj-decodable-try/';
+    a.href='https://mrjkorea.github.io/mrj-decodable-try-21/';
     a.target='_blank';
     a.rel='noopener';
-    a.textContent='Books 1–40';
+    a.textContent='Books 21-40';
     a.style.cssText='display:block;text-align:center;font-weight:900;margin:0 0 8px;color:#ffd84a';
     $('libList').before(a);
     const nxt=document.createElement('a');
     nxt.id='nextBand';
-    nxt.href='https://mrjkorea.github.io/mrj-decodable-try-71/';
+    nxt.href='https://mrjkorea.github.io/mrj-decodable-try-61/';
     nxt.target='_blank';
     nxt.rel='noopener';
-    nxt.textContent='Books 71–100';
+    nxt.textContent='Books 61-80';
     nxt.style.cssText='display:block;text-align:center;font-weight:900;margin:0 0 8px;color:#ffd84a';
     $('libList').before(nxt);
   }
-  $('modeBadge').textContent='Books 41–70';
+  $('modeBadge').textContent='Books 41-60';
   const nextId=bookOrder().find(id=>unlocked(id) && !bookProg(id).passed)||'';
   $('libList').innerHTML=bookOrder().map(id=>{
     const b=lib.books.find(x=>x.id===id);
