@@ -2,6 +2,6 @@
   "name": "mrj-decodable-try-41",
   "private": true,
   "scripts": {
-    "test": "node test/dec41-progress-merge.test.js && node test/index-html-script-syntax.test.js"
+    "test": "node test/dec41-progress-merge.test.js && node test/index-html-script-syntax.test.js && node test/index-html-pronounce-urls.test.js"
   }
 }
