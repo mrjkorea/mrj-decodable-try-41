@@ -62,6 +62,27 @@ const M = require('../dec41-progress-merge.js');
   assert.strictEqual(data.byStudent.alice.mlr_dec_041, undefined);
 })();
 
+(function testDecodableScoreItemId() {
+  assert.strictEqual(M.decodableScoreItemId('mlr_dec_041', 'listen'), 'mlr_dec_041:listen');
+  assert.strictEqual(M.decodableScoreItemId('mlr_dec_070', 'passed'), 'mlr_dec_070:passed');
+  assert.strictEqual(M.decodableScoreItemId('mlr_dec_041', 'mlr_dec_041:dictation'), 'mlr_dec_041:dictation');
+})();
+
+(function testReloadSavedSessionOpensLibraryOnce() {
+  const c = M.createLibraryBootCoordinator();
+  assert.strictEqual(c.onAuthReady(true), false, 'auth-ready before assets must not open yet');
+  assert.strictEqual(c.markAssetsReady(), true, 'assets ready after saved session should open');
+  assert.strictEqual(c.markAssetsReady(), false, 'second mark must not reopen');
+  assert.strictEqual(c.onAuthReady(true), false, 'duplicate auth-ready must not reopen');
+})();
+
+(function testAuthReadyAfterAssets() {
+  const c = M.createLibraryBootCoordinator();
+  assert.strictEqual(c.markAssetsReady(), false, 'no student yet');
+  assert.strictEqual(c.onAuthReady(true), true, 'sign-in after load should open');
+  assert.strictEqual(c.onAuthReady(true), false, 'only once');
+})();
+
 (function testUploadNeverIncludesLegacyMix() {
   const studentStore = {
     byStudent: { alice: { mlr_dec_043: { listen: true } } }
