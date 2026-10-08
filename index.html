@@ -219,10 +219,10 @@ body.student-desk #bookStage #play{
     <button id="mSay">Say</button>
   </div>
 </div>
-<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/ort/ort.all.min.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/engine.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/audio.js"></script>
-<script src="https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/grade-browser.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/ort/ort.all.min.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/engine.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/audio.js"></script>
+<script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/grade-browser.js"></script>
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
@@ -660,7 +660,7 @@ async function boot(){
   $('mSay').onclick=()=>setMode('speak');
   try{
     if(window.MRJPronounce){
-      MRJPronounce.setBase('https://mrjkorea.github.io/mrj-decodable-try-21/pronounce/');
+      MRJPronounce.setBase('https://mrjkorea.github.io/mrj-decodable-try/pronounce/');
       MRJPronounce.load().then(()=>{pronounceLoaded=true;}).catch(()=>{});
     }
   }catch(e){}
