@@ -1,6 +1,6 @@
 /* MRJ Decodables — Citrinet-only in-page grader (int8 ONNX, onnxruntime-web WASM). */
 (function (global) {
-  const MODEL_ORIGIN = 'https://mrjkorea.github.io/pronounce-try/';
+  const MODEL_ORIGIN = 'https://mrjkorea.github.io/pronounce/';
   const TRIAL_SRC =
     'https://cdn.jsdelivr.net/gh/mrjkorea/pronounce@90d9a5743a8d/src/trial.js';
   const WASM_PATHS = MODEL_ORIGIN + 'vendor/ort/';
