@@ -86,7 +86,11 @@ function createReportingSandbox(overrides) {
   assert.ok(build, 'mrj-build meta required');
   assert.strictEqual(inlineBuild, build);
   assert.strictEqual(mergeV, build);
-  assert.ok(build.endsWith('-savefix'), 'build stamp should end with -savefix');
+  assert.ok(build.endsWith('-citrinetonly'), 'build stamp should end with -citrinetonly');
+  assert.ok(
+    html.includes('pronounce/grade-browser.js?v=20261013-citrinetonly'),
+    'grade-browser cache bust must match citrinet-only rollout'
+  );
 })();
 
 (function testDictationReportsCmAndSsi() {
