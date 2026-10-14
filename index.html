@@ -4,7 +4,7 @@
 <!-- READ-TAP-GATE-20261012 -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="mrj-build" content="dec41-20261013-citrinetonly" />
+<meta name="mrj-build" content="dec41-20261014-sayfix" />
 <title>MRJ Decodables — Books 41-60</title>
 <style>
 :root{--bg:#070d18;--card:#101a2e;--text:#f4f7ff;--muted:#a9b7d6;--hl:#ffd84a;--ok:#3ecf8e}
@@ -281,13 +281,13 @@ body.student-desk #bookStage #play{
 <script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/ort/ort.all.min.js"></script>
 <script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/engine.js"></script>
 <script src="https://mrjkorea.github.io/mrj-decodable-try/pronounce/audio.js"></script>
-<script src="pronounce/grade-browser.js?v=20261013-citrinetonly"></script>
+<script src="pronounce/grade-browser.js?v=20261014-sayfix"></script>
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
-<script src="dec41-progress-merge.js?v=dec41-20261013-citrinetonly"></script>
+<script src="dec41-progress-merge.js?v=dec41-20261014-sayfix"></script>
 <script>
-const MRJ_BUILD='dec41-20261013-citrinetonly';
+const MRJ_BUILD='dec41-20261014-sayfix';
 const TEST=false;
 const ASSET_V='dec20261013famousgate';
 const STUDENT_KEY='mrj-dec-student';
@@ -405,7 +405,7 @@ let sheriffOk=false;
 let clipDone=false, showLang=true, lang='ko';
 let dictBuilt=[], dictQueue=[], dictIdx=0, dictRight=0, dictRate=0.8;
 let speakRec=null, sayPage=0, micCtx=null, lastYouBlob=null, lastTestBook=null;
-let sayTries=0, sayBest=0, sayAdvanceTimer=0;
+let sayTries=0, sayBest=0, sayMicPresses=0, sayAdvanceTimer=0;
 let packLoadState='idle';
 let packLoadRetryTimer=0;
 let packLoadBackoffMs=0;
@@ -750,10 +750,10 @@ function syncModeLocks(){
 function showSign(){ return; }
 function gloss(lem){ return ((pack&&pack.glossary&&pack.glossary.entries)||[]).find(x=>x.lemma===lem); }
 function sayTarget(text){
-  const words=String(text||'').match(/[A-Za-z']+/g)||[];
+  const words=String(text||'').match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[];
   if(words.length===1){
     const w=words[0];
-    return w+', '+w+', '+w;
+    return w+' '+w+' '+w;
   }
   return text;
 }
@@ -1668,15 +1668,44 @@ function saySlot(){
 }
 function sayTriesLoad(){
   sayBest=0;
+  sayMicPresses=0;
   try{
     const raw=JSON.parse(localStorage.getItem(saySlot())||'null');
     if(!raw) return 0;
     sayBest=+raw.best||0;
+    sayMicPresses=+raw.micPresses||0;
     return +raw.tries||0;
   }catch(e){ return 0; }
 }
 function sayTriesSave(){
-  try{ localStorage.setItem(saySlot(), JSON.stringify({tries:sayTries, best:sayBest})); }catch(e){}
+  try{ localStorage.setItem(saySlot(), JSON.stringify({tries:sayTries, best:sayBest, micPresses:sayMicPresses})); }catch(e){}
+}
+function sayAtMaxTries(){
+  return sayTries>=SAY_MAX_TRIES || sayMicPresses>=SAY_MAX_TRIES;
+}
+function sayMicPressBump(){
+  sayMicPresses++;
+  sayTriesSave();
+}
+function sayAttemptDone(score, reportOpts){
+  sayTries++;
+  if(typeof score==='number' && score>sayBest) sayBest=score;
+  sayTriesSave();
+  if(reportOpts) reportScore(pack.book_id,speakPageSection(sayPage),reportOpts.raw,reportOpts.max,reportOpts.extra||{});
+  return sayUnlockAfterMaxTries();
+}
+function sayUnlockAfterMaxTries(){
+  if(!sayAtMaxTries()) return false;
+  const mic=$('sayLine'); if(mic) mic.disabled=true;
+  const st=$('speakStatus');
+  if(st) st.textContent=(sayBest? sayBest+'% — ':'')+'5 tries. Tap Next to continue.';
+  const nextBtn=$('sayNext');
+  if(nextBtn){
+    nextBtn.classList.remove('hidden');
+    nextBtn.onclick=()=>finishSayPage(sayBest||0);
+  }
+  armSayAdvance(sayBest||0);
+  return true;
 }
 function sayTriesClear(){
   try{ localStorage.removeItem(saySlot()); }catch(e){}
@@ -1706,7 +1735,7 @@ function startSpeak(){
 function renderSay(){
   if(sayAdvanceTimer){ clearTimeout(sayAdvanceTimer); sayAdvanceTimer=0; }
   sayTries=sayTriesLoad();
-  if(sayTries>=SAY_MAX_TRIES){
+  if(sayAtMaxTries()){
     const best=sayBest;
     sayTriesClear();
     finishSayPage(best, false);
@@ -1792,8 +1821,12 @@ function wireRecorder(line){
   btn.onclick=async ev=>{
     ev.preventDefault();
     if(rec && rec.state==='recording') return;
+    sayMicPressBump();
+    if(sayUnlockAfterMaxTries()) return;
     try{ await start(); }
-    catch(e){ $('speakStatus').textContent='Mic blocked. Allow the microphone, then tap 🎙️ again.'; }
+    catch(e){
+      if(!sayAttemptDone(null,{raw:0,max:0,extra:{attemptError:true, reason:'mic_blocked'}})) $('speakStatus').textContent='Mic blocked. Allow the microphone, then tap 🎙️ again.';
+    }
   };
   stopBtn.onclick=ev=>{ ev.preventDefault(); stop(); };
 }
@@ -1802,7 +1835,7 @@ async function gradeBlob(line, blob){
   $('speakStatus').textContent='Checking your speaking…';
   if(!window.MRJPronounce){
     hideLoadbar();
-    $('speakStatus').textContent='Scoring engine missing. Reload the page.';
+    if(!sayAttemptDone(null,{raw:0,max:0,extra:{attemptError:true, reason:'scorer_missing'}})) $('speakStatus').textContent='Scoring engine missing. Reload the page.';
     return;
   }
   let j;
@@ -1814,20 +1847,19 @@ async function gradeBlob(line, blob){
     j=await MRJPronounce.grade(blob, line);
   }catch(e){
     hideLoadbar();
-    $('speakStatus').textContent='Scoring failed. Tap 🎙️ again. '+(e && e.message ? e.message : '');
-    reportScore(pack.book_id,speakPageSection(sayPage),0,0,{attemptError:true, reason:(e&&e.message)?e.message:'grade_failed'});
+    const msg='Scoring failed. Tap 🎙️ again. '+(e && e.message ? e.message : '');
+    if(!sayAttemptDone(null,{raw:0,max:0,extra:{attemptError:true, reason:(e&&e.message)?e.message:'grade_failed'}})) $('speakStatus').textContent=msg;
     return;
   }
   hideLoadbar();
   if(j.meta && String(j.meta.scoring_mode||'').startsWith('stub')){
-    $('speakStatus').textContent='Grader came back stub. Real model did not load.';
-    reportScore(pack.book_id,speakPageSection(sayPage),0,0,{attemptError:true, reason:'stub_scorer'});
+    if(!sayAttemptDone(null,{raw:0,max:0,extra:{attemptError:true, reason:'stub_scorer'}})) $('speakStatus').textContent='Grader came back stub. Real model did not load.';
     return;
   }
   if(j.doorFail){
     hideLoadbar();
-    $('speakStatus').textContent=j.reason||'';
-    reportScore(pack.book_id,speakPageSection(sayPage),0,0,{attemptError:true, reason:j.reason||'door_fail'});
+    const doorMsg=j.reason||'Say the sentence again, please. Say each word clearly.';
+    if(!sayAttemptDone(null,{raw:0,max:0,extra:{attemptError:true, reason:j.reason||'door_fail'}})) $('speakStatus').textContent=doorMsg;
     return;
   }
   const sc=Math.round(100*(j.overall&&j.overall.score||0));
@@ -1843,15 +1875,8 @@ async function gradeBlob(line, blob){
       nextBtn.onclick=()=>finishSayPage(sc);
     }
   }else{
-    sayTries++;
-    if(sc>sayBest) sayBest=sc;
-    sayTriesSave();
-    reportScore(pack.book_id,speakPageSection(sayPage),sc,100,{completed:false, itemType:'attempt', noteScore:false});
-    if(sayTries>=SAY_MAX_TRIES){
-      $('speakStatus').textContent=sc+'% — 5 tries. Next page.';
-      const mic=$('sayLine'); if(mic) mic.disabled=true;
-      armSayAdvance(sayBest);
-    }else $('speakStatus').textContent=sc+'% — try '+sayTries+' of '+SAY_MAX_TRIES+'. Say it again.';
+    const unlocked=sayAttemptDone(sc,{raw:sc,max:100,extra:{completed:false, itemType:'attempt', noteScore:false}});
+    if(!unlocked) $('speakStatus').textContent=sc+'% — try '+sayTries+' of '+SAY_MAX_TRIES+'. Say it again.';
   }
 }
 function finishSayPage(score){

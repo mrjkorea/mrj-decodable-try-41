@@ -88,7 +88,7 @@ function createReportingSandbox(overrides) {
   assert.strictEqual(mergeV, build);
   assert.ok(build.endsWith('-citrinetonly'), 'build stamp should end with -citrinetonly');
   assert.ok(
-    html.includes('pronounce/grade-browser.js?v=20261013-citrinetonly'),
+    html.includes('pronounce/grade-browser.js?v=20261014-sayfix'),
     'grade-browser cache bust must match citrinet-only rollout'
   );
 })();

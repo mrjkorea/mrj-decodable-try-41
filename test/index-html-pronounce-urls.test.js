@@ -23,7 +23,7 @@ const grader = fs.readFileSync(graderPath, 'utf8');
   const cdn = pronounceSrcs.filter((url) => url.startsWith(CDN_BASE));
   assert.ok(cdn.length >= 3, 'ort/engine/audio must load from Books 1-20 host');
   assert.ok(
-    html.includes('pronounce/grade-browser.js?v=20261013-citrinetonly'),
+    html.includes('pronounce/grade-browser.js?v=20261014-sayfix'),
     'grade-browser must be local with cache bust'
   );
   assert.ok(
