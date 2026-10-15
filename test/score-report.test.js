@@ -31,6 +31,7 @@ function extractReportingBlock(source) {
   const names = [
     'scoreItemId',
     'sheetPost',
+    'postClassroomMetricsBody',
     'localDate',
     'signedInStudent',
     'speakPageSection',
