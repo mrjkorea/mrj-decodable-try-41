@@ -37,8 +37,8 @@ const grader = fs.readFileSync(path.join(__dirname, '..', 'pronounce', 'grade-br
 
 (function testTrialJsMatchesPronounceMain() {
   assert.ok(
-    grader.includes('mrjkorea/pronounce@5f096806'),
-    'trial.js must track pronounce main (Day 4 citrinet checker)',
+    grader.includes('https://mrjkorea.github.io/pronounce/src/shared.js'),
+    'grader must load the shared pronounce HuBERT checker',
   );
 })();
 

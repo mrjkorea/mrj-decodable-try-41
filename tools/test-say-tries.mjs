@@ -74,7 +74,7 @@ async function setupSayPage(page) {
         return {
           doorFail: true,
           reason: 'Say the sentence again, please. Say each word clearly.',
-          meta: { scoring_mode: 'citrinet-only' },
+          meta: { scoring_mode: 'hubert-phoneme' },
         };
       },
     };
@@ -139,8 +139,8 @@ async function main() {
       doorFail: false,
       overall: { score: 0.12, band: 'fail' },
       words: [{ word: 'Sam', score: 0.1 }],
-      meta: { scoring_mode: 'citrinet-only' },
-      model_id: 'citrinet-only',
+      meta: { scoring_mode: 'hubert-phoneme' },
+      model_id: 'hubert-phoneme',
     });
     renderSay();
   });
