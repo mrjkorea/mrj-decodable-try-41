@@ -87,7 +87,7 @@ function createReportingSandbox(overrides) {
   assert.ok(build, 'mrj-build meta required');
   assert.strictEqual(inlineBuild, build);
   assert.strictEqual(mergeV, build);
-  assert.ok(build.endsWith('-hubert'), 'build stamp should end with -hubert');
+  assert.ok(build.endsWith('-teacher-mode'), 'build stamp should end with -teacher-mode');
   assert.ok(
     html.includes('pronounce/grade-browser.js?v=20261016-hubert'),
     'grade-browser cache bust must match HuBERT rollout'
