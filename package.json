@@ -2,7 +2,7 @@
   "name": "mrj-decodable-try-41",
   "private": true,
   "scripts": {
-    "test": "node test/dec41-progress-merge.test.js && node test/index-html-script-syntax.test.js && node test/index-html-pronounce-urls.test.js && node test/score-report.test.js && node test/say-max-tries.test.js && node test/hubert-shared.test.js",
+    "test": "node test/dec41-progress-merge.test.js && node test/index-html-script-syntax.test.js && node test/index-html-pronounce-urls.test.js && node test/score-report.test.js && node test/say-max-tries.test.js && node test/hubert-shared.test.js && node test/decodable-i18n.test.js",
     "bench:speak": "node tools/bench-speak.mjs",
     "test:say-tries": "node tools/test-say-tries.mjs"
   },
