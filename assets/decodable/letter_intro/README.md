@@ -7,8 +7,9 @@ before the famous word:
 cousin (sound card) → letter-intro → famous-card → famous → chase → Listen
 ```
 
-The mp4s are **not in git yet**. They arrive in a follow-up tar.gz; until then
-the app requests these URLs and gets a 404 (see "If a file is missing" below).
+These 20 mp4s are in this folder (from release
+`letter-intros-wire-20261030`, committed as-is). The app plays
+`asset('decodable/letter_intro/<mp4_name>')`.
 
 ## Files expected in this folder
 
@@ -39,19 +40,18 @@ Only these 20 files belong here; other books' intros live in their own repos.
 Use H.264 + AAC mp4 (with `-movflags +faststart`) so iPad/iPhone Safari can
 play them inline.
 
-## Adding the follow-up tar.gz
+## Replacing a file later
 
-Extract so the 20 mp4s sit directly in this folder (no sub-folder), then check:
+Same file name, no rename. Bump `ASSET_V` in `index.html` (and the value pinned
+in `test/dictation-ui.test.js`) so browsers drop the cached copy.
 
 ```sh
-tar -xzf <letter_intros>.tar.gz -C assets/decodable/letter_intro/
 ls assets/decodable/letter_intro/*.mp4 | wc -l   # expect 20
 npm test                                          # letter-intro test checks names
 ```
 
-`test/letter-intro.test.js` passes with zero mp4s (today) and with all 20, but
-fails if only some are present, a name does not match, or an unexpected mp4 is
-in the folder.
+`test/letter-intro.test.js` passes with all 20 present, and fails if only some
+are present, a name does not match, or an unexpected mp4 is in the folder.
 
 ## How the app finds the clip
 
@@ -68,12 +68,7 @@ in the folder.
 ### If a file is missing
 
 A 404 or decode error unlocks Next straight away (nothing is reported), so a
-student is never stuck on a black screen while the mp4s are not uploaded yet.
-
-### Replacing a video later
-
-Same file name → bump `ASSET_V` in `index.html` (and the value pinned in
-`test/dictation-ui.test.js`) so browsers drop the cached copy.
+student is never stuck on a black screen.
 
 ## Verify on GitHub Pages
 
