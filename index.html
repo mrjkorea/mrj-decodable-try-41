@@ -4,7 +4,7 @@
 <!-- READ-TAP-GATE-20261012 -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="mrj-build" content="dec41-20261022-teacher-mode" />
+<meta name="mrj-build" content="dec41-20261030-letter-intro-teacher-mode" />
 <title>MRJ Decodables — Books 41-60</title>
 <style>
 :root{--bg:#070d18;--card:#101a2e;--text:#f4f7ff;--muted:#a9b7d6;--hl:#ffd84a;--ok:#3ecf8e}
@@ -144,6 +144,9 @@ select{width:100%;padding:10px;border-radius:12px;border:0;background:#1b2740;co
 .repeat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
 .repeat button{font-size:1.15rem}
 .carpetVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+#introStage.intro-bleed{padding:0;display:flex;flex-direction:column;overflow:hidden}
+#introStage.intro-bleed #introBody{flex:1 1 auto;min-height:0;position:relative;background:#000}
+#introStage.intro-bleed #introGo{flex:0 0 auto;margin:0!important;border-radius:0;padding:16px 11px}
 .letterOut{position:absolute;left:50%;top:34%;transform:translate(-50%,-20%) scale(.2);opacity:0;font-size:5.4rem;font-weight:900;color:#ffe27a;text-shadow:0 0 22px #ffd84a;pointer-events:none}
 .letterOut.show{animation:stepout 2.2s ease forwards}
 @keyframes stepout{to{transform:translate(-50%,80%) scale(1);opacity:1;top:52%}}
@@ -288,10 +291,10 @@ body.student-desk #bookStage #play{
 <link rel="stylesheet" href="https://mrjkorea.github.io/mrj-signin/mrj-auth.css">
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth.js"></script>
 <script src="https://mrjkorea.github.io/mrj-signin/mrj-auth-boot.js" data-mrj-app="mrj-decodable-try-41"></script>
-<script src="mrj-scores.js?v=dec41-20261022-teacher-mode"></script>
-<script src="dec41-progress-merge.js?v=dec41-20261022-teacher-mode"></script>
+<script src="mrj-scores.js?v=dec41-20261030-letter-intro-teacher-mode"></script>
+<script src="dec41-progress-merge.js?v=dec41-20261030-letter-intro-teacher-mode"></script>
 <script>
-const MRJ_BUILD='dec41-20261022-teacher-mode';
+const MRJ_BUILD='dec41-20261030-letter-intro-teacher-mode';
 const TEST=false;
 const ASSET_V='dec20261022dict2';
 const STUDENT_KEY='mrj-dec-student';
@@ -422,6 +425,29 @@ const SOUND_CARD={
   mlr_dec_070:{show:'AU / AW', sub:'', hint:'/ɔ/ · saw', mouth:'', say:'au'}
 
 };
+// Keep in sync with letter_intros in align_mlr_dec_041..060.json (used when that field is missing).
+const LETTER_INTRO={
+  mlr_dec_041:['ph_letter_intro.mp4'],
+  mlr_dec_042:['a_e_letter_intro.mp4'],
+  mlr_dec_043:['i_e_letter_intro.mp4'],
+  mlr_dec_044:['o_e_letter_intro.mp4'],
+  mlr_dec_045:['u_e_letter_intro.mp4'],
+  mlr_dec_046:['e_e_letter_intro.mp4'],
+  mlr_dec_047:['ed_letter_intro.mp4'],
+  mlr_dec_048:['ing_letter_intro.mp4'],
+  mlr_dec_049:['ce__s_letter_intro.mp4'],
+  mlr_dec_050:['ge__j_letter_intro.mp4'],
+  mlr_dec_051:['ar_letter_intro.mp4'],
+  mlr_dec_052:['or_letter_intro.mp4'],
+  mlr_dec_053:['er_letter_intro.mp4'],
+  mlr_dec_054:['ir_letter_intro.mp4'],
+  mlr_dec_055:['ur_letter_intro.mp4'],
+  mlr_dec_056:['open_syl_letter_intro.mp4'],
+  mlr_dec_057:['y_ai_letter_intro.mp4'],
+  mlr_dec_058:['y_ee_letter_intro.mp4'],
+  mlr_dec_059:['le_letter_intro.mp4'],
+  mlr_dec_060:['old_ild_ind_ost_letter_intro.mp4']
+};
 const TAUGHT={mlr_dec_001:['a','m','s','t'],mlr_dec_002:['a','m','s','t','p'],mlr_dec_003:['a','m','s','t','p','i'],mlr_dec_004:['a','m','s','t','p','i','n'],mlr_dec_005:['a','m','s','t','p','i','n','f'],mlr_dec_006:['a','m','s','t','p','i','n','f','o'],mlr_dec_007:['a','m','s','t','p','i','n','f','o','d'],mlr_dec_008:['a','m','s','t','p','i','n','f','o','d','c'],mlr_dec_009:['a','m','s','t','p','i','n','f','o','d','c','u'],mlr_dec_010:['a','m','s','t','p','i','n','f','o','d','c','u','g']};
 let lib=null, i18n=null, pack=null, pageIndex=0, mode='library', audio=null, listenGen=0, hlRaf=0;
 let introStep='mode', cousinIdx=0;
@@ -429,6 +455,7 @@ let introDone=false;      // sound + famous + any pre-video finished -> Listen o
 let preVideoDone=false;   // this book's start video (lawbreaker chase) played through
 let famousVidEnded=false;
 let famousAudEnded=false;
+let letterIntroDone=false; // letter-intro video ended (or could not load) -> Next opens
 let tapped=new Set(), heardListen=new Set(), heardSong=new Set();
 let sheriffOk=false;
 let clipDone=false, showLang=true, lang='ko';
@@ -734,7 +761,8 @@ function reportIntroStep(section, extra){
   const bookId=pack.book_id;
   const bp=bookProg(bookId);
   const itemId=section;
-  if(bp[section] || (bp.reported||[]).indexOf(itemId)>=0) return;
+  const rep=bp.reported; // array when written here, object map after MERGE.mergeBookProgress
+  if(bp[section] || (Array.isArray(rep) ? rep.indexOf(itemId)>=0 : !!(rep && rep[itemId]))) return;
   const patch={reported:[itemId]};
   patch[section]=true;
   setBookProg(bookId, patch);
@@ -957,7 +985,10 @@ async function boot(){
   syncStudentNamePill();
   if(LIB_BOOT && LIB_BOOT.markAssetsReady()) openLibraryAfterAuth();
 }
-function hideAll(){ ['signStage','libStage','introStage','bookStage','workStage'].forEach(id=>$(id).classList.add('hidden')); }
+function hideAll(){
+  const lv=$('letterIntroVid'); if(lv){ try{lv.pause();}catch(e){} }
+  ['signStage','libStage','introStage','bookStage','workStage'].forEach(id=>$(id).classList.add('hidden'));
+}
 function showLib(){
   if(!studentName()) return;
   if(pack && pack.book_id) lastTestBook=pack.book_id;
@@ -1014,6 +1045,21 @@ async function openBook(id){
 }
 
 function cousinLetters(){ return NEW_LETTERS[pack.book_id]||[]; }
+function letterIntroClips(){
+  const own=pack&&pack.letter_intros;
+  return (Array.isArray(own)&&own.length ? own : LETTER_INTRO[pack&&pack.book_id])||[];
+}
+function kickLetterIntro(){
+  const v=$('letterIntroVid'), go=$('introGo');
+  if(!v || letterIntroDone) return;
+  go.textContent='Next'; go.disabled=true;
+  v.play().catch(()=>{
+    // Autoplay blocked: let the button start the video; Next still waits for 'ended'.
+    if(mode==='intro' && introStep==='letter-intro' && $('letterIntroVid')===v && !letterIntroDone && !v.error){
+      go.textContent='▶ Play'; go.disabled=false;
+    }
+  });
+}
 function cousinGlyph(letter){
   const L=String(letter||'').toLowerCase();
   if(!L) return '';
@@ -1040,6 +1086,7 @@ function stopFamousMedia(){
 function showIntro(){
   mode='intro'; stopA(); hideAll();
   $('introStage').classList.remove('hidden');
+  $('introStage').classList.toggle('intro-bleed', introStep==='letter-intro');
   $('introGo').classList.remove('hidden');
   $('introGo').disabled=false;
   syncModeLocks();
@@ -1061,7 +1108,7 @@ function showIntro(){
       $('introGo').textContent='Next';
       return;
     }
-    if(!letters.length){ reportIntroStep('sound'); introStep='famous-card'; showIntro(); return; }
+    if(!letters.length){ reportIntroStep('sound'); introStep=letterIntroClips().length?'letter-intro':'famous-card'; showIntro(); return; }
     const L=letters[cousinIdx];
     const cu=cousinGlyph(L);
     $('modeBadge').textContent=letterTitle(L);
@@ -1078,6 +1125,29 @@ function showIntro(){
     </div>`;
     playPath('decodable/letter_names/'+L+'.mp3', null, 1);
     $('introGo').textContent = cousinIdx<letters.length-1 ? 'Next letter' : 'Next';
+    return;
+  }
+  if(introStep==='letter-intro'){
+    const clips=letterIntroClips();
+    if(!clips.length){ introStep='famous-card'; showIntro(); return; }
+    const card=SOUND_CARD[pack.book_id];
+    $('modeBadge').textContent='Letter intro'+(card?' · '+card.show:'');
+    $('introBody').innerHTML='<video class="carpetVid" id="letterIntroVid" autoplay playsinline webkit-playsinline></video>';
+    letterIntroDone=false;
+    const v=$('letterIntroVid');
+    let k=0;
+    const live=()=>mode==='intro' && introStep==='letter-intro' && $('letterIntroVid')===v;
+    const unlock=()=>{ if(!live()) return; letterIntroDone=true; $('introGo').textContent='Next'; $('introGo').disabled=false; };
+    v.onended=()=>{
+      if(!live()) return;
+      if(++k<clips.length){ v.src=asset('decodable/letter_intro/'+clips[k]); kickLetterIntro(); return; }
+      unlock();
+      reportIntroStep('letter-intro', {clips:clips});
+    };
+    v.onerror=unlock;   // missing/broken mp4: never trap the student on a black screen
+    v.onclick=()=>{ if(v.paused) kickLetterIntro(); };
+    v.src=asset('decodable/letter_intro/'+clips[0]);
+    kickLetterIntro();
     return;
   }
   if(introStep==='famous-card'){
@@ -1157,6 +1227,10 @@ function chooseDiff(d){ setBookProg(pack.book_id,{difficulty:d}); startDictation
 function introAdvance(){
   if(introStep==='cousin'){
     if(cousinIdx<cousinLetters().length-1){ cousinIdx++; showIntro(); return; }
+    introStep=letterIntroClips().length?'letter-intro':'famous-card'; showIntro(); return;
+  }
+  if(introStep==='letter-intro'){
+    if(!letterIntroDone){ kickLetterIntro(); return; }   // the letter video must play through first
     introStep='famous-card'; showIntro(); return;
   }
   if(introStep==='famous-card'){
@@ -2078,7 +2152,12 @@ function testBackIntro(){
     if(cousinIdx>0){ cousinIdx--; showIntro(); return; }
     showLib(); return;
   }
+  if(introStep==='letter-intro'){
+    if(letters.length || SOUND_CARD[pack.book_id]){ introStep='cousin'; cousinIdx=Math.max(0, letters.length-1); showIntro(); return; }
+    showLib(); return;
+  }
   if(introStep==='famous-card'){
+    if(letterIntroClips().length){ introStep='letter-intro'; showIntro(); return; }
     if(letters.length){ introStep='cousin'; cousinIdx=letters.length-1; showIntro(); return; }
     showLib(); return;
   }
