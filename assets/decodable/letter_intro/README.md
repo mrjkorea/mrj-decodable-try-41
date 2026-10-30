@@ -72,7 +72,8 @@ student is never stuck on a black screen while the mp4s are not uploaded yet.
 
 ### Replacing a video later
 
-Same file name → bump `ASSET_V` in `index.html` so browsers drop the cached copy.
+Same file name → bump `ASSET_V` in `index.html` (and the value pinned in
+`test/dictation-ui.test.js`) so browsers drop the cached copy.
 
 ## Verify on GitHub Pages
 
